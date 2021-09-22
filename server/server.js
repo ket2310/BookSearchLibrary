@@ -6,12 +6,19 @@ const { typeDefs, resolvers } = require('./schemas');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
 
-server.applyMiddleware({ app });
+let server = null;
+
+async function startServer() {
+  server = new ApolloServer({
+      typeDefs,
+      resolvers,
+  });
+  await server.start();
+  server.applyMiddleware({ app });
+}
+
+startServer();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
