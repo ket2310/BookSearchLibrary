@@ -10,6 +10,15 @@ const typeDefs = gql`
     title: String
   }
 
+  input BookData {
+    _id: ID
+    authors: String
+    description: String
+    bookId: String
+    image: String
+    title: String
+  }
+
   type User {
       _id: ID
       username: String
@@ -33,7 +42,7 @@ const typeDefs = gql`
       # Set up mutations to handle creating a profile or logging into a profile and return Auth type
       addUser(username: String!, email: String!, password: String!): Auth
      
-      addBook(userId: ID!, book: book!): User
+      addBook(userId: ID!, book: BookData!): User
       
       login(email: String!, password: String!): Auth
       

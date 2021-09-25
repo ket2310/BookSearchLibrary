@@ -70,6 +70,7 @@ const SearchBooks = () => {
 
     try {
       const userId = Auth.getProfile().data.userId;
+      console.log(userId)
       const data = await addBook({
         variables: { userId, bookToSave },
       });     
