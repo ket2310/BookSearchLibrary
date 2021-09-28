@@ -9,7 +9,7 @@ const resolvers = {
       return User.find({}).populate('savedBooks');
     },
     user: async (parent, { userId }) => {
-      return Profile.findOne({ _id: profileId }).populate('savedBooks');
+      return User.findOne({ _id: userId }).populate('savedBooks');
     },
   },
 
@@ -39,7 +39,7 @@ const resolvers = {
 
     addBook: async (parent, { book }, context) => {
       if (context.user) {
-       return User.findOneAndUpdate(
+        return User.findOneAndUpdate(
           { _id: context.user._id },
           { $addToSet: { savedBooks: book } },
           { new: true, runValidators: true }
@@ -47,12 +47,14 @@ const resolvers = {
       }
     },
 
-    removeBook: async (oarent, { userId, book }) => {
-      return User.findOneAndUpdate(
-        { _id: userId },
-        { $pull: { savedBooks, book } },
-        { new: true }
-      );
+    removeBook: async (oarent, { bookId }, context) => {
+      if (context.user) {
+        return User.findOneAndUpdate(
+          { _id: userId },
+          { $pull: { savedBooks, bookId } },
+          { new: true }
+        );
+      }
     },
   },
 };

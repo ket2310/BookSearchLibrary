@@ -43,8 +43,8 @@ export const ADD_BOOK = gql`
 `;
 
 export const REMOVE_BOOK = gql`
-  mutation removeBook($book: Book!) {
-    removebook(book: $book) {
+  mutation removeBook($bookId: Int!) {
+    removebook(bookId: $bookId) {
       _id
       authors
       description
