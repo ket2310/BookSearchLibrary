@@ -37,12 +37,14 @@ const resolvers = {
       return { token, user };
     },
 
-    addBook: async (parent, { userId, book }) => {
-      return User.findOneAndUpdate(
-        { _id: userId },
-        { $addToSet: { savedBooks: book } },
-        { new: true, runValidators: true }
-      );
+    addBook: async (parent, { book }, context) => {
+      if (context.user) {
+       return User.findOneAndUpdate(
+          { _id: context.user._id },
+          { $addToSet: { savedBooks: book } },
+          { new: true, runValidators: true }
+        );
+      }
     },
 
     removeBook: async (oarent, { userId, book }) => {

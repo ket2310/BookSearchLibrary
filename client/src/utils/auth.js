@@ -4,7 +4,7 @@ import decode from 'jwt-decode';
 // create a new class to instantiate for a user
 class AuthService {
   // get user data
-  getProfile() {
+  getUser() {
     return decode(this.getToken());
   }
 
@@ -39,7 +39,7 @@ class AuthService {
   }
 
   logout() {
-    // Clear user token and profile data from localStorage
+    // Clear user token and User data from localStorage
     localStorage.removeItem('id_token');
     // this will reload the page and reset the state of the application
     window.location.assign('/');
