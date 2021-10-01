@@ -1,60 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
 import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import { REMOVE_BOOK } from '../utils/mutations';
-import { QUERY_USER } from '../utils/queries';
+import { QUERY_ME } from '../utils/queries';
 import { removeBookId } from '../utils/localStorage';
 import Auth from '../utils/auth'
 
 const SavedBooks = () => {
-  const [userData, setUserData] = useState({});
 
-  const { userId } = useParams();
 
-  // If there is no `userId` in the URL as a parameter, execute the `QUERY_ME` query instead for the logged in user's information
-  const { loading, data } = useQuery(QUERY_USER,
-    {
-      variables: { userId: userId },
-    }
-  );
-
-  const user = data?.user || {};
-  // use this to determine if `useEffect()` hook needs to run again
-  const userDataLength = Object.keys(userData).length;
-
-  const [removeBook, { error }] = useMutation(REMOVE_BOOK, {
-    update(cache, { data: { removeBook } }) {
-      try {
-        cache.writeQuery({
-          query: QUERY_USER,
-          data: { me: removeBook },
-        });
-      } catch (e) {
-        console.error(e);
-      }
-    },
-  });
+  const { loading, myerror, data } = useQuery(QUERY_ME);
   
-  useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const token = Auth.loggedIn() ? Auth.getToken() : null;
+  console.log(myerror)
+  const userData = data?.user || {};
 
-        if (!token) {
-          return false;
-        }
-
-
-        setUserData(user);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    getUserData();
-  }, [userDataLength]);
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
@@ -76,8 +37,21 @@ const SavedBooks = () => {
     }
   };
 
+  const [removeBook, { error }] = useMutation(REMOVE_BOOK, {
+    update(cache, { data: { removeBook } }) {
+      try {
+        cache.writeQuery({
+          query: QUERY_ME,
+          data: { me: removeBook },
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    },
+  });
+
   // if data isn't here yet, say so
-  if (!userDataLength) {
+  if (!loading) {
     return <h2>LOADING...</h2>;
   }
 

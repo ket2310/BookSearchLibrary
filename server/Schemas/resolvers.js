@@ -8,6 +8,13 @@ const resolvers = {
     users: async () => {
       return User.find({}).populate('savedBooks');
     },
+    me: async (parent, args, context) => {
+      console.log("hello world")
+      if (context.user) {
+        return await User.findOne({ _id: context.user._id });
+      }
+      throw new AuthenticationError('You need to be logged in!');
+    },
     user: async (parent, { userId }) => {
       return User.findOne({ _id: userId }).populate('savedBooks');
     },
@@ -21,6 +28,7 @@ const resolvers = {
       return { token, user };
     },
     login: async (parent, { email, password }) => {
+      console.log("You are here.........")
       const user = await User.findOne({ email });
 
       if (!user) {
