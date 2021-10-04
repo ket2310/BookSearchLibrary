@@ -12,6 +12,9 @@ const SavedBooks = () => {
 
 
   const { loading, myerror, data } = useQuery(QUERY_ME);
+  console.log("my Data")
+  console.log(data)
+
   
   console.log(myerror)
   const userData = data?.user || {};
