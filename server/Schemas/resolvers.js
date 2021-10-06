@@ -1,6 +1,7 @@
 const { User } = require('../models');
 const { AuthenticationError } = require('apollo-server-express');
 const { signToken } = require('../utils/auth');
+const { ObjectId } = require('mongodb');
 
 
 const resolvers = {
@@ -31,7 +32,7 @@ const resolvers = {
     login: async (parent, { email, password }) => {
   
       const user = await User.findOne({ email });
-      console.log ("Hey-rro!")
+      console.log ("Hey-rro!  Login================")
       if (!user) {
         throw new AuthenticationError('No user with this email found!');
       }
@@ -59,10 +60,14 @@ const resolvers = {
     },
 
     removeBook: async (oarent, { bookId }, context) => {
+      console.log("Hey-rro! Inside Resolver removeBook.")
       if (context.user) {
+        console.log("Hey-rro from Kirk!!!!!!!!!!!!!")
+        console.log(context.user._id)
+        console.log(bookId)
         return User.findOneAndUpdate(
-          { _id: userId },
-          { $pull: { savedBooks, bookId } },
+          { _id: context.user._id },
+          { $pull: { savedBooks: { _id: ObjectId(bookId) } } },
           { new: true }
         );
       }

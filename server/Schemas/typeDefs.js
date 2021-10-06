@@ -52,7 +52,11 @@ const typeDefs = gql`
       
       login(email: String!, password: String!): Auth
       
-      removeBook(bookId: Int!): User
+      removeBook(
+        userId: ID! 
+        bookId: ID!
+      ): 
+      User
   }
 `;
 
